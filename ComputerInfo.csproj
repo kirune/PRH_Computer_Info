@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+
+		<!-- Force x64 -->
+		<PlatformTarget>x64</PlatformTarget>
+
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+
+		<!-- App icon (for the .exe in Explorer / taskbar) -->
+		<ApplicationIcon>Assets\AppIconNew.ico</ApplicationIcon>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Assets\prh_logo.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Ensure WPF can use it in XAML (Window.Icon) -->
+		<Resource Include="Assets\AppIconNew.ico">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Assets\prh_logo.png">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,14 @@
+# Ignore build artifacts
+bin/
+obj/
+*.exe
+*.pdb
+
+# Ignore Visual Studio user-specific files
+.vs/
+*.user
+*.suo
+
+# Ignore logs and caches
+*.log
+*.vsidx
