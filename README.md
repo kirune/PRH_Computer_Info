@@ -18,6 +18,7 @@ Install the runtime with:
 
 ```powershell
 winget install Microsoft.DotNet.DesktopRuntime.8 --architecture x64
+```
 
 ## License
 
