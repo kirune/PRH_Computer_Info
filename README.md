@@ -1,2 +1,2 @@
 # PRH_Computer_Info
-Simple app to display current computer info making it easy for users to send relevant info to IT.
+A lightweight tool that shows key computer details, making it easy for users to share relevant info with IT
