@@ -18,3 +18,21 @@ Install the runtime with:
 
 ```powershell
 winget install Microsoft.DotNet.DesktopRuntime.8 --architecture x64
+
+## License
+
+This project is licensed under the [GNU General Public License v3.0 (GPL-3.0)](LICENSE).
+
+### Additional Terms
+In accordance with Section 7 of GPL-3.0:
+
+- **Logos and Trademarks**  
+  The Pullman Regional Hospital (PRH) name, logo(s), and any associated trademarks are *not* licensed under GPL-3.0.  
+  These marks remain the exclusive property of PRH.  
+
+- **Redistribution**  
+  Any redistribution of this software outside of PRH must remove or replace the PRH name and logo(s).  
+  The assets in the `Assets/` directory are provided for internal PRH use only and may not be redistributed or reused.  
+
+- **No Endorsement**  
+  The presence of PRH branding in this software does not imply endorsement, certification, or responsibility for modifications made by third parties.  
