@@ -672,3 +672,26 @@ may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
+
+ ADDITIONAL TERMS (Pullman Regional Hospital Project Branding)
+ ----------------------------------------------------------------------
+
+ In accordance with Section 7 of the GNU General Public License v3.0, the
+ following additional terms apply to this project:
+
+ 1. **Logos and Trademarks**  
+    - The Pullman Regional Hospital (PRH) name, logo(s), and any associated
+      trademarks are *not* licensed under GPL-3.0.  
+    - These marks remain the exclusive property of PRH.  
+
+ 2. **Redistribution**  
+    - Any redistribution of this software outside of PRH must remove or replace
+      the PRH name and logo(s).  
+    - The included logo assets in the `Assets/` directory are provided for
+      internal PRH use only and may not be redistributed or reused.  
+
+ 3. **No Endorsement**  
+    - The presence of PRH branding in this software does not imply endorsement,
+      certification, or responsibility for modifications made by third parties.  
+
+ ----------------------------------------------------------------------
