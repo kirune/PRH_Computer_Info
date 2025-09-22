@@ -2,6 +2,9 @@
 
 A lightweight WPF desktop application that displays local computer and user information, and provides quick-access tools for Pullman Regional Hospital staff.
 
+![.NET](https://img.shields.io/badge/.NET-8.0-blueviolet?logo=dotnet&logoColor=white)
+![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
+
 ## Features
 - Display computer name, IP addresses, logged-in user, OS, default printer, and reboot time
 - One-click buttons to:
