@@ -8,9 +8,9 @@ using System.Printing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using System.Runtime.InteropServices;          // Win32 clipboard + focus
-using System.Threading.Tasks;                 // Task.Delay
-using System.Windows.Interop;                 // WindowInteropHelper
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Windows.Interop;
 
 namespace HelpCard
 {
@@ -51,7 +51,11 @@ namespace HelpCard
             {
                 var printServer = new LocalPrintServer();
                 var defaultQueue = printServer.DefaultPrintQueue;
-                return defaultQueue.FullName;
+
+                // Strip \\server\ if present
+                var name = defaultQueue.FullName;
+                if (name.Contains("\\")) name = name.Split('\\').Last();
+                return name;
             }
             catch
             {
@@ -110,12 +114,11 @@ namespace HelpCard
                    $"IP(s): {string.Join(", ", IpList.Items.Cast<string>())}";
         }
 
-        // --- COPY: Native clipboard path (robust under focus/contention) ---
+        // --- COPY ---
         private async void Copy_Click(object sender, RoutedEventArgs e)
         {
             string info = GetSystemInfoString();
 
-            // Gentle foreground nudge helps OpenClipboard succeed more often.
             BringWindowToForeground();
             await Task.Delay(60);
 
@@ -134,7 +137,7 @@ namespace HelpCard
                 }
 
                 await Task.Delay(delayMs);
-                if (delayMs < 800) delayMs *= 2; // backoff
+                if (delayMs < 800) delayMs *= 2;
             }
 
             if (ok)
@@ -151,12 +154,10 @@ namespace HelpCard
             }
         }
 
-        // Native clipboard: CF_UNICODETEXT via Win32, bypassing OLE/WPF Clipboard.
         private static bool TrySetClipboardUnicodeNative(nint ownerHwnd, string text)
         {
             if (string.IsNullOrEmpty(text)) return false;
 
-            // OpenClipboard can fail if another app holds it; we only attempt once here.
             if (!OpenClipboard(ownerHwnd)) return false;
 
             try
@@ -164,7 +165,6 @@ namespace HelpCard
                 if (!EmptyClipboard())
                     return false;
 
-                // Allocate global memory for UTF-16 text + null terminator
                 int bytes = (text.Length + 1) * 2;
                 nint hGlobal = GlobalAlloc(GHND, (nuint)bytes);
                 if (hGlobal == 0) return false;
@@ -175,16 +175,13 @@ namespace HelpCard
                     ptr = GlobalLock(hGlobal);
                     if (ptr == 0) return false;
 
-                    // Copy string into unmanaged buffer
                     Marshal.Copy(text.ToCharArray(), 0, ptr, text.Length);
-                    // Null-terminate
                     Marshal.WriteInt16(ptr, text.Length * 2, 0);
 
-                    // After SetClipboardData, clipboard owns the memory; do NOT free it.
                     if (SetClipboardData(CF_UNICODETEXT, hGlobal) == 0)
                         return false;
 
-                    hGlobal = 0; // ownership transferred
+                    hGlobal = 0;
                     return true;
                 }
                 finally
@@ -198,19 +195,19 @@ namespace HelpCard
                 CloseClipboard();
             }
         }
+
         private void EpicHelp_Click(object sender, RoutedEventArgs e)
         {
-            string url = "https://access.providence.org/";
+            string url = "https://spportal/SitePages/Employee-Education,-Training-and-how-tos.aspx?web=1";
 
             string[] chromePaths =
             {
-        @"C:\Program Files\Google\Chrome\Application\chrome.exe",
-        @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-    };
+                @"C:\Program Files\Google\Chrome\Application\chrome.exe",
+                @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+            };
 
             try
             {
-                // Try each Chrome path
                 foreach (var path in chromePaths)
                 {
                     if (System.IO.File.Exists(path))
@@ -221,11 +218,10 @@ namespace HelpCard
                             Arguments = url,
                             UseShellExecute = true
                         });
-                        return; // success
+                        return;
                     }
                 }
 
-                // Fallback to default browser
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = url,
@@ -238,10 +234,6 @@ namespace HelpCard
                                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-
-
-        // --- Email ---
 
         private void EmailIT_Click(object sender, RoutedEventArgs e)
         {
@@ -256,7 +248,6 @@ namespace HelpCard
             }
             catch
             {
-                // Fallback: attempt native clipboard too
                 _ = TrySetClipboardUnicodeNative(new WindowInteropHelper(this).Handle, body);
                 MessageBox.Show("Unable to open email client. Info copied to clipboard instead.",
                                 "Email Error", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -287,7 +278,22 @@ namespace HelpCard
             timer.Start();
         }
 
-        // --- Foreground helpers ---
+        private void DefaultPrinterButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new AddPrinterWindow
+            {
+                Owner = this
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                if (!string.IsNullOrEmpty(dialog.DisplayPrinterName))
+                {
+                    DefaultPrinterText.Text = dialog.DisplayPrinterName +
+                        (dialog.SetAsDefault ? " (Default)" : "");
+                }
+            }
+        }
 
         private void BringWindowToForeground()
         {
@@ -310,8 +316,6 @@ namespace HelpCard
                 // best effort
             }
         }
-
-        // --- Win32 interop ---
 
         private const uint CF_UNICODETEXT = 13;
         private const uint GMEM_MOVEABLE = 0x0002;

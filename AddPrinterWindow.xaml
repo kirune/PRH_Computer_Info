@@ -1,0 +1,97 @@
+﻿<Window x:Class="HelpCard.AddPrinterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Add Printer"
+        SizeToContent="Height"
+        Width="400"
+        WindowStartupLocation="CenterOwner"
+        Background="#6E9C78"
+        FontFamily="Trebuchet MS"
+        FontWeight="Bold"
+        ResizeMode="NoResize">
+
+    <StackPanel Margin="20" HorizontalAlignment="Center">
+        <!-- Label text will be updated in code-behind -->
+        <TextBlock x:Name="InstructionText"
+           Text="Enter or select a printer:"
+           FontSize="16"
+           Foreground="#f5f5f5"
+           Margin="0,0,0,8"
+           HorizontalAlignment="Center"
+           TextWrapping="Wrap"
+           TextAlignment="Center"
+           Width="360"/>
+
+        <!-- Rounded ComboBox for live search -->
+        <ComboBox x:Name="PrinterComboBox"
+                  Width="320"
+                  FontSize="14"
+                  IsEditable="True"
+                  StaysOpenOnEdit="True"
+                  IsTextSearchEnabled="False"
+                  DisplayMemberPath="DisplayName"
+                  SelectedValuePath="FullName"
+                  PreviewTextInput="PrinterComboBox_PreviewTextInput"
+                  KeyUp="PrinterComboBox_KeyUp"
+                  Margin="0,0,0,12">
+            <ComboBox.Resources>
+                <!-- Make editable TextBox inside ComboBox look like RoundedTextBox -->
+                <Style TargetType="TextBox" BasedOn="{StaticResource RoundedTextBox}"/>
+
+                <!-- Style for dropdown items -->
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="Margin" Value="2"/>
+                    <Setter Property="Padding" Value="6"/>
+                    <Setter Property="FontSize" Value="14"/>
+                    <Setter Property="Background" Value="#f5f5f5"/>
+                    <Setter Property="Foreground" Value="#231F20"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ComboBoxItem">
+                                <Border x:Name="border"
+                                        CornerRadius="6"
+                                        Background="{TemplateBinding Background}"
+                                        Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsHighlighted" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="#CDE5D2"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="#6E9C78"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ComboBox.Resources>
+        </ComboBox>
+
+        <!-- Rounded CheckBox -->
+        <CheckBox x:Name="SetDefaultCheckBox"
+                  Content="Set as default printer"
+                  Style="{StaticResource RoundedCheckBox}"
+                  Margin="0,20,0,20"
+                  HorizontalAlignment="Center"/>
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,10,0,0">
+            <Button Content="Add"
+                    Width="100"
+                    Background="#005C27"
+                    Tag="#458357"
+                    Style="{StaticResource RoundedButton}"
+                    Click="Add_Click"/>
+            <Button Content="Cancel"
+                    Width="100"
+                    Background="#4D4D4A"
+                    Tag="#7e7e7c"
+                    Style="{StaticResource RoundedButton}"
+                    Click="Cancel_Click"/>
+        </StackPanel>
+    </StackPanel>
+</Window>
