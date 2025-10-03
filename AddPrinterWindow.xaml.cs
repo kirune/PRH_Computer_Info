@@ -9,7 +9,7 @@ using System.Printing;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace HelpCard
+namespace ComputerInfo
 {
     public class PrinterInfo
     {

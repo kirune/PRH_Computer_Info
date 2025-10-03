@@ -11,8 +11,9 @@ using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Interop;
+using System.Windows.Navigation;
 
-namespace HelpCard
+namespace ComputerInfo
 {
     public partial class MainWindow : Window
     {
@@ -293,6 +294,13 @@ namespace HelpCard
                         (dialog.SetAsDefault ? " (Default)" : "");
                 }
             }
+        }
+
+        private void About_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            var about = new AboutWindow { Owner = this };
+            about.ShowDialog();
+            e.Handled = true;
         }
 
         private void BringWindowToForeground()

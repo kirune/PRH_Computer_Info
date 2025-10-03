@@ -13,10 +13,24 @@
 
 		<!-- App icon (for the .exe in Explorer / taskbar) -->
 		<ApplicationIcon>Assets\AppIconNew.ico</ApplicationIcon>
+
+		<!-- Product metadata -->
+		<AssemblyTitle>ComputerInfo</AssemblyTitle>
+		<Company>PRH IT</Company>
+		<Product>ComputerInfo</Product>
+		<Description>Displays system and printer information for IT support</Description>
+		<Authors>PRH IT</Authors>
+		<PackageProjectUrl>https://github.com/kirune/PRH_Computer_Info</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/kirune/PRH_Computer_Info</RepositoryUrl>
+
+		<!-- Versioning -->
+		<AssemblyVersion>1.2.0.0</AssemblyVersion>
+		<FileVersion>1.2.0.0</FileVersion>
+		<Version>1.2.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="Assets\prh_logo.png" />
+		<None Remove="Assets\prh_logo.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -25,7 +39,7 @@
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Assets\prh_logo.png">
-		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Resource>
 	</ItemGroup>
 
