@@ -15,13 +15,16 @@ A lightweight WPF desktop application that displays local computer and user info
 
 ## Requirements
 - Windows 10 or later (x64)
-- [.NET 8.0 Desktop Runtime (x64)](https://dotnet.microsoft.com/en-us/download/dotnet/8.0/runtime)
 
-Install the runtime with:
+Two downloads are published on the [Releases page](https://github.com/kirune/PRH_Computer_Info/releases) for each version:
 
-```powershell
-winget install Microsoft.DotNet.DesktopRuntime.8 --architecture x64
-```
+- **`ComputerInfo.exe`** (small) — requires the [.NET 8.0 Desktop Runtime (x64)](https://dotnet.microsoft.com/en-us/download/dotnet/8.0/runtime) to already be installed:
+  ```powershell
+  winget install Microsoft.DotNet.DesktopRuntime.8 --architecture x64
+  ```
+- **`ComputerInfo-selfcontained.exe`** (larger, ~100MB+) — bundles the .NET runtime, so it runs standalone with nothing to install first. Use this on machines where the runtime isn't already deployed.
+
+Both are also available zipped (`-win-x64.zip` / `-win-x64-selfcontained.zip`) on the same release.
 
 ## License
 
