@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Verify tag matches project version
+        shell: pwsh
+        run: |
+          $tagVersion = "${env:GITHUB_REF_NAME}" -replace '^v', '' -replace '-.*$', ''
+          $csprojVersion = (Select-String -Path 'ComputerInfo.csproj' -Pattern '<Version>(.*)</Version>').Matches.Groups[1].Value
+          if ($tagVersion -ne $csprojVersion) {
+            Write-Error "Tag '$env:GITHUB_REF_NAME' (parsed as $tagVersion) does not match <Version>$csprojVersion</Version> in ComputerInfo.csproj. Bump the csproj Version before tagging a release."
+            exit 1
+          }
+          Write-Host "Tag version $tagVersion matches csproj version $csprojVersion"
+
+      - name: Publish
+        run: dotnet publish ComputerInfo.csproj -c Release -r win-x64 --self-contained false -o publish
+
+      - name: Zip artifact
+        shell: pwsh
+        run: Compress-Archive -Path publish\* -DestinationPath "ComputerInfo-${env:GITHUB_REF_NAME}-win-x64.zip"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ComputerInfo-*-win-x64.zip
+          generate_release_notes: true
+          fail_on_unmatched_files: true
