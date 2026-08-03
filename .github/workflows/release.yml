@@ -33,19 +33,30 @@ jobs:
           }
           Write-Host "Tag version $tagVersion matches csproj version $csprojVersion"
 
-      - name: Publish
+      - name: Publish (framework-dependent)
         run: dotnet publish ComputerInfo.csproj -c Release -r win-x64 --self-contained false -o publish
 
-      - name: Zip artifact
+      - name: Publish (self-contained, .NET included)
+        run: dotnet publish ComputerInfo.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish-selfcontained
+
+      - name: Rename self-contained exe
         shell: pwsh
-        run: Compress-Archive -Path publish\* -DestinationPath "ComputerInfo-${env:GITHUB_REF_NAME}-win-x64.zip"
+        run: Rename-Item -Path 'publish-selfcontained\ComputerInfo.exe' -NewName 'ComputerInfo-selfcontained.exe'
+
+      - name: Zip artifacts
+        shell: pwsh
+        run: |
+          Compress-Archive -Path publish\* -DestinationPath "ComputerInfo-${env:GITHUB_REF_NAME}-win-x64.zip"
+          Compress-Archive -Path publish-selfcontained\* -DestinationPath "ComputerInfo-${env:GITHUB_REF_NAME}-win-x64-selfcontained.zip"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             ComputerInfo-*-win-x64.zip
+            ComputerInfo-*-win-x64-selfcontained.zip
             publish/ComputerInfo.exe
+            publish-selfcontained/ComputerInfo-selfcontained.exe
           generate_release_notes: true
           fail_on_unmatched_files: true
 
