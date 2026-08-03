@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -41,6 +43,36 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ComputerInfo-*-win-x64.zip
+          files: |
+            ComputerInfo-*-win-x64.zip
+            publish/ComputerInfo.exe
           generate_release_notes: true
           fail_on_unmatched_files: true
+
+      - name: Update internal winget manifest
+        shell: pwsh
+        run: |
+          $version = "${env:GITHUB_REF_NAME}" -replace '^v', '' -replace '-.*$', ''
+          $sha256 = (Get-FileHash -Algorithm SHA256 -Path 'publish\ComputerInfo.exe').Hash.ToLower()
+          $installerUrl = "https://github.com/${env:GITHUB_REPOSITORY}/releases/download/${env:GITHUB_REF_NAME}/ComputerInfo.exe"
+          $destDir = "manifests\p\prh\computerinfo\$version"
+
+          git fetch origin main:refs/remotes/origin/main
+          git checkout -B main origin/main
+
+          New-Item -ItemType Directory -Force -Path $destDir | Out-Null
+          $template = Get-Content 'manifests\_template\PRH.ComputerInfo.template.yaml' -Raw
+          $rendered = $template.Replace('__VERSION__', $version).Replace('__INSTALLER_URL__', $installerUrl).Replace('__INSTALLER_SHA256__', $sha256)
+          Set-Content -Path "$destDir\PRH.ComputerInfo.yaml" -Value $rendered -NoNewline
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$destDir\PRH.ComputerInfo.yaml"
+
+          $status = git status --porcelain
+          if ($status) {
+            git commit -m "Add winget manifest for $version ($env:GITHUB_REF_NAME) [skip ci]"
+            git push origin main
+          } else {
+            Write-Host "Manifest for $version already up to date, nothing to commit."
+          }
